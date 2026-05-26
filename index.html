@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Game</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://esm.sh/three@0.160.0",
+                "three/addons/": "https://esm.sh/three@0.160.0/examples/jsm/",
+                "nipplejs": "https://esm.sh/nipplejs"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="start-screen">
+        <div id="start-bg"></div>
+        <div class="title-text">Minecraft Preclassic Recreations</div>
+        <div class="menu-layout">
+            <div class="menu-column">
+                <div class="subtitle-text">Select Version:</div>
+                <div class="version-container">
+                    <div class="mc-button version-select" id="btn-start-cave-game" title="Tech Test">Cave Game Tech Test</div>
+                    <div class="mc-button version-select" id="btn-start-rd-132211" title="99.87% Accurate">rd-132211</div>
+                    <div class="mc-button version-select" id="btn-start-rd-132328" title="Accurate, but the animations for the mobs are wrong.">rd-132328</div>
+                    <div class="mc-button version-select disabled" title="Version not implemented yet.">rd-20090515</div>
+                    <div class="mc-button version-select disabled" title="Version not implemented yet.">rd-160052</div>
+                </div>
+                
+                <div class="subtitle-text" style="margin-top: 20px;">Level Management:</div>
+                <div class="version-container">
+                    <div class="mc-button disabled" id="btn-save-level">Save Level</div>
+                    <div class="mc-button" id="btn-load-level">Load Level</div>
+                    <div class="mc-button" id="btn-reset-level">Reset Level</div>
+                </div>
+            </div>
+            
+            <div class="menu-column code-column">
+                <div class="code-header">
+                    <span>RubyDung.java</span>
+                    <button id="btn-copy-code" class="mc-button small-btn">Copy Code</button>
+                </div>
+                <div class="code-box">
+                    <pre id="java-code-display"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mobile-ui" style="display: none;">
+        <div id="joystick-zone"></div>
+        <div id="actions">
+            <button id="btn-respawn" class="control-btn">R</button>
+            <div class="action-row">
+                <button id="btn-switch" class="control-btn">MODE</button>
+                <button id="btn-use" class="control-btn big-btn">BREAK</button>
+            </div>
+            <button id="btn-jump" class="control-btn big-btn">JUMP</button>
+        </div>
+    </div>
+    <script type="module">
+        import { startGame } from './js/main.js';
+        import { JAVA_CODE } from './js/JavaPort.js';
+
+        const startScreen = document.getElementById('start-screen');
+        const clickSound = new Audio('/y2mate.com - ButtonPlate Click Minecraft Sound  Sound Effect for editing.mp3');
+        const codeDisplay = document.getElementById('java-code-display');
+        const btnCopy = document.getElementById('btn-copy-code');
+
+        // Populate Code
+        codeDisplay.textContent = JAVA_CODE;
+
+        // Copy Functionality
+        btnCopy.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(JAVA_CODE);
+                const originalText = btnCopy.textContent;
+                btnCopy.textContent = "Copied!";
+                setTimeout(() => {
+                    btnCopy.textContent = originalText;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+        });
+
+        // Generic Sound Handler for all buttons
+        document.querySelectorAll('.mc-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.classList.contains('disabled')) return;
+                clickSound.currentTime = 0;
+                clickSound.play().catch(err => console.warn("Sound play prevented:", err));
+            });
+        });
+
+        // Version Selection Logic (Specific Class)
+        document.querySelectorAll('.mc-button.version-select').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (btn.classList.contains('disabled')) return;
+
+                const versionText = btn.textContent.trim();
+                
+                startScreen.style.display = 'none';
+                startGame(versionText);
+            });
+        });
+
+        // Load Level Button (Menu Context)
+        const btnLoad = document.getElementById('btn-load-level');
+        // We use onclick to avoid stacking listeners if we re-run this script (though module scripts run once)
+        // But main.js will overwrite this onclick once loaded.
+        // This handler handles the "Initial Load" from the start screen.
+        btnLoad.onclick = () => {
+             // If game is already running (canvas exists), main.js handles it. 
+             if (document.querySelector('canvas')) return;
+
+             const json = localStorage.getItem('rubydung_level_dat');
+             if (!json) {
+                 alert('No save found!');
+                 return;
+             }
+             
+             let ver = 'rd-132211';
+             try {
+                 const data = JSON.parse(json);
+                 if (data.version) ver = data.version;
+             } catch(e) {}
+
+             startScreen.style.display = 'none';
+             // Pass true to indicate we want to load immediately
+             startGame(ver, true);
+        };
+        
+        const btnReset = document.getElementById('btn-reset-level');
+        btnReset.onclick = () => {
+             if (document.querySelector('canvas')) return; // handled by main.js
+             
+             if (confirm('Delete saved level?')) {
+                localStorage.removeItem('rubydung_level_dat');
+                alert('Deleted.');
+             }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    overscroll-behavior: none;
+    background-color: #7fcdfe;
+    font-family: monospace;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+@font-face {
+    font-family: 'Minecraft';
+    src: url('/Minecraft Seven_2.ttf');
+}
+
+#start-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+#start-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/dirt.png');
+    background-size: 64px;
+    background-repeat: repeat;
+    image-rendering: pixelated;
+    filter: brightness(0.3);
+    z-index: -1;
+}
+
+.title-text {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 32px;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 #000;
+    text-align: center;
+    padding: 0 10px;
+    line-height: 1.2;
+}
+
+.subtitle-text {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 20px;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 0 #000;
+    color: #ddd;
+}
+
+.menu-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 40px;
+    width: 90%;
+    max-width: 1200px;
+    height: 60%;
+}
+
+.menu-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    max-width: 400px;
+}
+
+.code-column {
+    height: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.version-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.mc-button {
+    background: #787878; /* Classic main gray */
+    border-top: 2px solid #a0a0a0;
+    border-left: 2px solid #a0a0a0;
+    border-bottom: 2px solid #404040;
+    border-right: 2px solid #404040;
+    color: #fff;
+    font-family: 'Minecraft', sans-serif;
+    font-size: 16px;
+    padding: 14px;
+    cursor: pointer;
+    text-shadow: 2px 2px 0 #3f3f3f;
+    width: 100%;
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+.mc-button:hover:not(.disabled) {
+    background: #888888; /* Slightly lighter */
+    border-top-color: #b0b0b0;
+    border-left-color: #b0b0b0;
+    border-bottom-color: #505050;
+    border-right-color: #505050;
+    color: #ffffa0; /* Classic yellow hover text */
+}
+
+.mc-button:active:not(.disabled) {
+    background: #686868;
+    border-top: 2px solid #404040;
+    border-left: 2px solid #404040;
+    border-bottom: 2px solid #a0a0a0;
+    border-right: 2px solid #a0a0a0;
+}
+
+.mc-button.disabled {
+    background: #505050; /* Darker grey */
+    color: #808080;
+    border-color: #606060 #303030 #303030 #606060;
+    cursor: not-allowed;
+    text-shadow: 1px 1px 0 #202020;
+}
+
+canvas {
+    display: block;
+}
+
+#mobile-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    touch-action: none;
+}
+
+#joystick-zone {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 150px;
+    height: 150px;
+    pointer-events: auto;
+}
+
+#actions {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    pointer-events: auto;
+}
+
+.action-row {
+    display: flex;
+    gap: 15px;
+}
+
+.control-btn {
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    color: white;
+    font-family: monospace;
+    font-weight: bold;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+    color: #ddd;
+    font-family: 'Minecraft', sans-serif;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.code-box {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #a0a0a0;
+    border-radius: 4px;
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 0 20px #000;
+}
+
+#java-code-display {
+    margin: 0;
+    padding: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #a0a0a0;
+    white-space: pre;
+    overflow: auto;
+    height: 100%;
+    box-sizing: border-box;
+    text-shadow: none;
+}
+
+.small-btn {
+    width: auto;
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+/* Mobile responsive */
+@media (max-width: 800px) {
+    .menu-layout {
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+        gap: 20px;
+    }
+    
+    .code-column {
+        width: 100%;
+        height: 300px;
+    }
+
+    #start-screen {
+        overflow-y: auto;
+        justify-content: flex-start;
+        padding-top: 40px;
+    }
+}
+
+.control-btn:active {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.big-btn {
+    width: 80px;
+    height: 60px;
+    font-size: 16px;
+}
+
+#btn-switch {
+    width: 60px;
+    font-size: 12px;
+}
+
+#btn-use {
+    width: 100px;
+    font-size: 18px;
+    border-width: 3px;
+}
+
+#btn-respawn {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 0, 0, 0.3);
+}
